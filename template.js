@@ -1,7 +1,5 @@
 "use strict";
 
-var npm = require('npm');
-
 exports.description = "My (Jean-Pierre Gygax') node-webkit boilerplate";
 
 exports.warnOn = "*";
@@ -65,40 +63,14 @@ exports.template = function(grunt, init, done) {
       name: props.name,
       version: props.version,
       //npm_test: 'mocha',
+      dependencies: dependencies,
       devDependencies: devDependencies
     }, function(pkg, props) {
       pkg.window = { width: 1600, height: 900 }
       return pkg;
     });
 
-    installDependencies( dependencies, { 'save': true }, 
-      function() { installDependencies( devDependencies, { 'save-dev': true }, done ) } );
-    
-    //----------------
-    
-    function installDependencies(deps, options, cb) {      
-      
-      var depNames = [];
-      for (var pname in deps) depNames.push(pname);
-      if (depNames.length === 0) { cb(); return; }
-      
-      npm.load( options, function(err) {    
-        if (err) throw new Error(err);      
-      
-        var idep = 0;      
-        installNextDependency();
-        
-        function installNextDependency() {
-          var pkg_name = depNames[idep];
-          console.log(idep, pkg_name);
-          idep++;
-          npm.commands.install([pkg_name], function(err, data) {
-            if (err) throw new Error('Failed to install "'+pkg_name+'": ' + err);
-            if (idep < depNames.length) installNextDependency(); else cb();
-          })
-        }
-      })
-    }
+    done();
     
   });
 
