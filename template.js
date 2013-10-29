@@ -49,19 +49,22 @@ exports.template = function(grunt, init, done) {
     var devDependencies = {
       'grunt-contrib-jade'   : '*',
       'grunt-contrib-stylus' : '*',
+      'grunt-contrib-copy'   : '*',
       'grunt-browserify'     : '*',
       'grunt-contrib-jshint' : '*',
       'grunt-contrib-qunit'  : '*',
       'grunt-contrib-concat' : '*',
       'grunt-contrib-uglify' : '*',
       'grunt-contrib-watch'  : '*',
-      'grunt-contrib-clean'  : '*'
+      'grunt-contrib-clean'  : '*',
+      'debowerify'           : '*'
     }
     
     // Generate package.json file, used by npm and grunt.
     init.writePackageJSON('package.json', {
       name: props.name,
       version: props.version,
+      main: 'main.html',
       //npm_test: 'mocha',
       dependencies: dependencies,
       devDependencies: devDependencies

@@ -1,13 +1,5 @@
 "use strict";
 
-/* TODO: this should probably be replaced by a full list of bower modules, not just those that must be shim'd.
- */
-var browserify_shims = {
-	// jQuery attaches itself to the window as '$' so we assign the exports accordingly
-  // TODO: how to install and update jQuery? with or without version number ?
-	jquery      : { path: './lib/jquery-2.0.3.min.js', exports: '$' }
-}
-
 module.exports = function(grunt) {
 
   grunt.initConfig({
@@ -16,7 +8,7 @@ module.exports = function(grunt) {
     
     jade: {
       dist: {
-        files: { 'build/main.html': [ 'main.jade' ] },
+        files: { 'build/main.html': [ 'src/main.jade' ] },
         options: {
           client: false
         }
@@ -40,7 +32,7 @@ module.exports = function(grunt) {
           'build/client-bundle.js': [ 'src/client/main.js' ]
         },
         options: {
-          shim: browserify_shims,
+          transform: ['debowerify' ],
           debug: true
         }
       }
@@ -50,12 +42,8 @@ module.exports = function(grunt) {
       dist: {
         files: [
           { expand: true, cwd: 'src/node/', src: '*.js', dest: 'build/' },
-          { dest: 'build/package.json', src: ['src/package.json'] },
-        ],
-        options: {
-          shim: browserify_shims,
-          debug: true
-        }
+          { dest: 'build/package.json', src: ['package.json'] }
+        ]
       }
     },
     
@@ -68,9 +56,6 @@ module.exports = function(grunt) {
   grunt.registerTask('build', ['jade', 'stylus', 'browserify', 'copy']);
   grunt.registerTask('default', ['build']);
   grunt.registerTask('all', ['build', 'watch']);
-  
-  // TODO: also launch node-webkit ?
-  //grunt.registerTask('test', ['jade:testapp', 'stylus:testapp', 'browserify:testapp', 'copy:testapp']);
   
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jade');
