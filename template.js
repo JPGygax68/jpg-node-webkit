@@ -43,14 +43,21 @@ exports.template = function(grunt, init, done) {
     // Actually copy (and process) files.
     init.copyAndProcess(files, props, {noProcess: 'libs/**'});
 
+    // Distribution dependencies
+    var dependencies = {
+    };
+    
     // Development dependencies
     var devDependencies = {
-      'grunt-contrib-jshint': '*',
-      'grunt-contrib-qunit' : '*',
-      'grunt-contrib-concat': '*',
-      'grunt-contrib-uglify': '*',
-      'grunt-contrib-watch' : '*',
-      'grunt-contrib-clean' : '*'
+      'grunt-contrib-jade'   : '*',
+      'grunt-contrib-stylus' : '*',
+      'grunt-browserify'     : '*',
+      'grunt-contrib-jshint' : '*',
+      'grunt-contrib-qunit'  : '*',
+      'grunt-contrib-concat' : '*',
+      'grunt-contrib-uglify' : '*',
+      'grunt-contrib-watch'  : '*',
+      'grunt-contrib-clean'  : '*'
     }
     
     // Generate package.json file, used by npm and grunt.
@@ -64,25 +71,35 @@ exports.template = function(grunt, init, done) {
       return pkg;
     });
 
-    npm.load( { 'save-dev': 'true', 'silent': true }, function(err) {
+    installDependencies( dependencies, { 'save': true }, 
+      function() { installDependencies( devDependencies, { 'save-dev': true }, done ) } );
     
-      if (err) throw new Error(err);
-      
-      var devDepNames = [];
-      for (var pname in devDependencies) devDepNames.push(pname);
-      
-      var i = 0;      
-      installNextDevDependency();
-      
-      function installNextDevDependency() {
-        var pkg_name = devDepNames[i++];
-        npm.commands.install([pkg_name], function(err, data) {
-          if (err) throw new Error('Failed to install "'+pkg_name+'": ' + err);
-          if (i < devDepNames.length) installNextDevDependency(); else done();
-        })
-      }
-    })
+    //----------------
     
-    });
+    function installDependencies(deps, options, cb) {      
+      
+      var depNames = [];
+      for (var pname in deps) depNames.push(pname);
+      if (depNames.length === 0) { cb(); return; }
+      
+      npm.load( options, function(err) {    
+        if (err) throw new Error(err);      
+      
+        var idep = 0;      
+        installNextDependency();
+        
+        function installNextDependency() {
+          var pkg_name = depNames[idep];
+          console.log(idep, pkg_name);
+          idep++;
+          npm.commands.install([pkg_name], function(err, data) {
+            if (err) throw new Error('Failed to install "'+pkg_name+'": ' + err);
+            if (idep < depNames.length) installNextDependency(); else cb();
+          })
+        }
+      })
+    }
+    
+  });
 
 }
