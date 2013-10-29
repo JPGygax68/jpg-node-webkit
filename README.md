@@ -3,7 +3,7 @@ jpg-node-webkit
 
 A grunt-init template for node-webkit projects.
 
-The [node-webkit](https://github.com/rogerwang/node-webkit) opens whole new ways of coding by combining the webkit browser engine with the Node javascript runner into a single runtime environment.
+[node-webkit](https://github.com/rogerwang/node-webkit) opens whole new ways of coding by combining the webkit browser engine with the Node javascript runner into a single runtime environment.
 
 This is a seriously powerful combination, which however can be a bit on the tricky side to get going. So, I wrote this [grunt-init](https://github.com/gruntjs/grunt-init) template to help me take the frustration out of starting new projects. 
 For the time being, this template is rather simple, but it already incorporates a few bits of hard-earned wisdom.
